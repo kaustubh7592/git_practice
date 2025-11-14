@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will you be mine?</title>
+  <style>
+    body {
+      font-family: Inter, system-ui, Arial;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg,#ffd6e0,#fff3b0);
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      color: #e91e63;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #444;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    .btn {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      margin: 8px;
+      font-size: 16px;
+    }
+    #yes {
+      background: #ff4081;
+      color: #fff;
+    }
+    #no {
+      background: #f8bbd0;
+      color: #333;
+    }
+    #msg {
+      margin-top: 18px;
+      color: #d81b60;
+      font-weight: 600;
+    }
+    .heart {
+      position: absolute;
+      font-size: 22px;
+      color: #ff4d6d;
+      animation: floatUp 2.8s linear forwards;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-200px) scale(1.8); opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.4rem; }
+      h2 { font-size: 1rem; }
+      .btn { font-size: 14px; padding: 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h2>Hey Aishuuu 👸, remember I said I made something just for fun? Well… here it is 😌</h2>
+    <h1>Sooo... will you say yes if I ask you to be mine? 💖</h1>
+    <div id="controls">
+      <button id="yes" class="btn">Yes</button>
+      <button id="no"  class="btn">No</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = "https://webhook.site/e21e4ea9-5c00-4082-ba34-40b3ab21ed3c";
+    const yesBtn = document.getElementById("yes");
+    const noBtn  = document.getElementById("no");
+    const msg    = document.getElementById("msg");
+    let noCount = 0;
+    const noReplies = [
+      "Are you sure? 🥺",
+      "Think again, Aishuuu 😢",
+      "Come on, say yes na! 😍",
+      "Last chance... 😌",
+      "Okay fine... but my heart’s still waiting ❤️"
+    ];
+
+    function sendWebhook(choice) {
+      fetch(`${WEBHOOK_URL}?choice=${encodeURIComponent(choice)}&time=${Date.now()}`)
+        .catch(()=>{});
+    }
+
+    function createHearts() {
+      for (let i=0;i<20;i++){
+        const h=document.createElement("div");
+        h.className="heart";
+        h.textContent="💖";
+        h.style.left=(10+Math.random()*80)+"vw";
+        h.style.top=(80+Math.random()*10)+"vh";
+        h.style.fontSize=(14+Math.random()*30)+"px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),3000);
+      }
+    }
+
+    yesBtn.addEventListener("click",()=>{
+      msg.innerHTML = "I love you, Aishuuu ❤️<br><span style='font-size:1rem;color:#555'>Tujha smile pahije ata 😌</span>";
+      document.getElementById("controls").style.display="none";
+      createHearts();
+      sendWebhook("YES");
+    });
+
+    noBtn.addEventListener("click",()=>{
+      if(noCount<noReplies.length-1){
+        msg.textContent=noReplies[noCount];
+        noCount++;
+        sendWebhook("NO_ATTEMPT_"+noCount);
+      } else {
+        msg.textContent="Okay... I'll wait until you're ready 😌💖";
+        document.getElementById("controls").style.display="none";
+        sendWebhook("NO_FINAL");
+      }
+    });
+  </script>
+</body>
+</html>
